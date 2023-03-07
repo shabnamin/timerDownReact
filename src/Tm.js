@@ -3,10 +3,13 @@ import React from 'react';
 class Tm extends React.Component {
     constructor() {
         super();
-        this.state = { time: {}, seconds: 10 };
+        this.state = { 
+          time: {},
+          inputTime: 12
+         };
+
         this.timer = 0;
-        this.start = this.start.bind(this);
-        this.countDown = this.countDown.bind(this);
+      
       }
     
       toTime(inputTime){
@@ -16,42 +19,40 @@ class Tm extends React.Component {
         let ds = dm % 60;
         let seconds = Math.ceil(ds);
     
-        let obj = {
+        let time = {
           "h": hours,
           "m": minutes,
           "s": seconds
         };
-        return obj;
+        return time;
       }
-    
+
       componentDidMount() {
-        let timeLeftVar = this.toTime(this.state.seconds);
+        let timeLeftVar = this.toTime(this.state.inputTime);
         this.setState({ time: timeLeftVar });
-      }
-    
-      start() {
-        if (this.timer === 0 && this.state.seconds > 0) {
-          this.timer = setInterval(this.countDown, 1000);
+        if (this.timer === 0 && this.state.inputTime > 0) {
+          this.timer = setInterval(()=>{
+            let inputTime = this.state.inputTime - 1;
+            this.setState({
+              time: this.toTime(inputTime),
+              inputTime: inputTime,
+            });
+
+          }
+            ,1000);
         }
       }
-    
-      countDown() {
-        let seconds = this.state.seconds - 1;
-        this.setState({
-          time: this.toTime(seconds),
-          seconds: seconds,
-        });
-        
-        if (seconds===0) { 
+
+      componentDidUpdate(){
+        if (this.state.inputTime === 0) { 
           clearInterval(this.timer);
         }
       }
-    
+
       render() {
         return(
             <div>
           <div >
-            <button  className='start'onClick={this.start}>شروع</button>
             </div>
             <br></br>
 
